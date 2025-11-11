@@ -58,6 +58,7 @@ services:
       dockerfile: dockerfiles/composer.dockerfile
     volumes:
       - ./src:/var/www/html
+    container_name: laravel_composer
     depends_on:
       - php
     networks:
@@ -70,6 +71,7 @@ services:
       dockerfile: dockerfiles/php.dockerfile
     volumes:
       - ./src:/var/www/html
+    container_name: laravel_artisan
     entrypoint: ["php", "/var/www/html/artisan"]
     networks:
       - laravel_network

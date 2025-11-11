@@ -1,0 +1,116 @@
+version: "3.8"
+
+networks:
+  laravel_network:
+  traefik_proxy:
+    external: true  # red compartida por Traefik
+
+services:
+  # 🚀 Proxy reverso Traefik
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+
+  # 🌐 Servidor Nginx
+  server:
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
+    volumes:
+      - ./src:/var/www/html:ro
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+    container_name: laravel_server
+    networks:
+      - laravel_network
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.laravel.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.laravel.entrypoints=websecure"
+      - "traefik.http.routers.laravel.tls.certresolver=myresolver"
+      - "traefik.http.services.laravel.loadbalancer.server.port=80"
+      # Redirección HTTP a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.laravel-http.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.laravel-http.entrypoints=web"
+      - "traefik.http.routers.laravel-http.middlewares=redirect-to-https"
+    restart: unless-stopped
+
+  # 🧠 PHP-FPM
+  php:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    container_name: laravel_php
+    networks:
+      - laravel_network
+    restart: unless-stopped
+
+  # 🗄️ Base de datos
+  mysql:
+    image: mysql:8.0.1
+    restart: unless-stopped
+    container_name: laravel_mysql
+    env_file:
+      - mysql/.env.prod
+    networks:
+      - laravel_network
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    # Healthcheck para asegurar que MySQL esté listo
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # 💻 Composer (solo para instalación inicial)
+  composer:
+    build:
+      context: .
+      dockerfile: dockerfiles/composer.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - laravel_network
+    profiles:
+      - tools  # Solo se ejecuta con: docker-compose --profile tools up
+
+  # ⚙️ Artisan (útil para comandos como migrate)
+  artisan:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    volumes:
+      - ./src:/var/www/html
+    entrypoint: ["php", "/var/www/html/artisan"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - laravel_network
+    profiles:
+      - tools  # Solo se ejecuta con: docker-compose --profile tools up

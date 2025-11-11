@@ -1,0 +1,111 @@
+# ===================================
+# .dockerignore
+# Evita copiar archivos innecesarios al contexto de Docker
+# Reduce tamaño de imágenes y mejora velocidad de build
+# ===================================
+
+# ===================================
+# GIT
+# ===================================
+.git
+.gitignore
+.gitattributes
+.github
+
+# ===================================
+# DOCKER
+# ===================================
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+*.md
+README.md
+CHANGELOG.md
+
+# Datos persistentes
+mysql_data
+data
+
+# ===================================
+# LARAVEL - ARCHIVOS SENSIBLES
+# ===================================
+.env
+.env.*
+*.env
+.env.backup
+.env.local
+
+# ===================================
+# LARAVEL - DEPENDENCIAS (se instalan en build)
+# ===================================
+src/vendor
+src/node_modules
+
+# ===================================
+# LARAVEL - CACHE Y TEMPORALES
+# ===================================
+src/storage/app/*
+!src/storage/app/.gitignore
+!src/storage/app/public
+src/storage/framework/cache/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/storage/logs/*
+src/bootstrap/cache/*
+src/.phpunit.result.cache
+src/.phpunit.cache
+
+# Archivos públicos compilados (se generan en build)
+src/public/hot
+src/public/storage
+src/public/css
+src/public/js
+src/public/mix-manifest.json
+src/public/build
+
+# ===================================
+# TESTS
+# ===================================
+src/tests
+src/phpunit.xml
+src/coverage
+
+# ===================================
+# IDE Y EDITORES
+# ===================================
+.vscode
+.idea
+*.code-workspace
+.sublime-*
+*.iml
+nbproject
+
+# ===================================
+# SISTEMA OPERATIVO
+# ===================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+._*
+
+# ===================================
+# LOGS Y TEMPORALES
+# ===================================
+*.log
+*.tmp
+*.bak
+*.cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===================================
+# BACKUPS Y DUMPS
+# ===================================
+*.sql
+*.sql.gz
+*.dump
+backup
+backups

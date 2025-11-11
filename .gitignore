@@ -1,0 +1,151 @@
+# ===================================
+# ARCHIVOS DE ENTORNO Y CONFIGURACIÓN
+# ===================================
+.env
+.env.local
+.env.*.local
+*.env.backup
+
+# ===================================
+# DOCKER
+# ===================================
+# Datos persistentes de contenedores
+mysql_data/
+data/
+
+# Certificados SSL de Let's Encrypt (se generan en servidor)
+letsencrypt/
+
+# Logs de Docker
+*.log
+
+# Solo ignorar override personal (dev y prod SÍ se suben)
+docker-compose.override.yml
+
+# ===================================
+# LARAVEL (dentro de /src)
+# ===================================
+src/vendor/
+src/node_modules/
+src/.env
+src/.env.backup
+src/.phpunit.result.cache
+src/Homestead.json
+src/Homestead.yaml
+src/npm-debug.log
+src/yarn-error.log
+src/.phpunit.cache
+
+# Cache y almacenamiento de Laravel
+src/storage/*.key
+src/storage/app/*
+!src/storage/app/.gitignore
+!src/storage/app/public
+src/storage/framework/cache/*
+!src/storage/framework/cache/.gitignore
+src/storage/framework/sessions/*
+!src/storage/framework/sessions/.gitignore
+src/storage/framework/views/*
+!src/storage/framework/views/.gitignore
+src/storage/logs/*
+!src/storage/logs/.gitignore
+
+# Bootstrap cache
+src/bootstrap/cache/*
+!src/bootstrap/cache/.gitignore
+
+# Archivos públicos generados
+src/public/hot
+src/public/storage
+src/public/css
+src/public/js
+src/public/mix-manifest.json
+
+# ===================================
+# NGINX
+# ===================================
+nginx/*.log
+
+# ===================================
+# MYSQL
+# ===================================
+mysql/*.sql
+mysql/dumps/
+
+# ===================================
+# IDE Y EDITORES
+# ===================================
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# PhpStorm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# NetBeans
+nbproject/
+
+# ===================================
+# SISTEMA OPERATIVO
+# ===================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# ===================================
+# COMPOSER Y DEPENDENCIAS
+# ===================================
+composer.phar
+src/composer.lock
+src/auth.json
+
+# ===================================
+# NPM Y NODE
+# ===================================
+src/package-lock.json
+src/yarn.lock
+src/pnpm-lock.yaml
+
+# ===================================
+# TESTS Y COVERAGE
+# ===================================
+src/coverage/
+src/.phpunit.cache
+src/tests/_reports/
+
+# ===================================
+# ARCHIVOS TEMPORALES
+# ===================================
+*.swp
+*.swo
+*.tmp
+*.bak
+*.cache
+*~
+
+# ===================================
+# BACKUPS Y DUMPS
+# ===================================
+*.sql
+*.sql.gz
+*.dump
+backup/
+backups/

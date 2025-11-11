@@ -85,7 +85,7 @@ services:
       timeout: 20s
       retries: 10
 
-  # 💻 Composer (solo para instalación inicial)
+  # 💻 Composer solo si lo necesitas en despliegue
   composer:
     build:
       context: .
@@ -96,8 +96,6 @@ services:
       - php
     networks:
       - laravel_network
-    profiles:
-      - tools  # Solo se ejecuta con: docker-compose --profile tools up
 
   # ⚙️ Artisan (útil para comandos como migrate)
   artisan:
@@ -107,10 +105,5 @@ services:
     volumes:
       - ./src:/var/www/html
     entrypoint: ["php", "/var/www/html/artisan"]
-    depends_on:
-      mysql:
-        condition: service_healthy
     networks:
       - laravel_network
-    profiles:
-      - tools  # Solo se ejecuta con: docker-compose --profile tools up

@@ -17,8 +17,7 @@ RUN apk add --no-cache --virtual build-essentials \
     docker-php-ext-install zip && \
     apk del build-essentials && rm -rf /usr/src/php*
 
-RUN apk add --no-cache pcre-dev $PHPIZE_DEPS && \
-    pecl install redis && \
+RUN apk add --no-cache pcre-dev $PHPIZE_DEPS redis && \
     docker-php-ext-enable redis.so
 
 RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
